@@ -1,4 +1,5 @@
 package t::TagProvider;
+use strict;
 
 use MooseX::ComposedBehavior -compose => {
   sugar_name   => 'add_tags',

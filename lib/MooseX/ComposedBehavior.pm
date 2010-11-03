@@ -59,8 +59,10 @@ sub _build_composed_behavior {
     },
     collectors => {
       INIT => sub {
-        $_[0] = { target => $_[1]{into} };
-        Moose::Util::apply_all_roles($_[1]{into}, $role);
+        my $target = $_[1]{into};
+        $_[0] = { target => $target };
+        return 1 if $target->can('does') and $target->does($role);
+        Moose::Util::apply_all_roles($target, $role);
         return 1;
       },
     },

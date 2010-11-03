@@ -1,4 +1,5 @@
 package t::Titles;
+use strict;
 
 use MooseX::ComposedBehavior -compose => {
   sugar_name   => 'add_title',
