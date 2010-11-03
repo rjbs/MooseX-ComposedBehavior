@@ -35,9 +35,18 @@ use Test::More;
 }
 
 {
+  package Baz;
+  use Moose::Role;
+  use t::Concatenator;
+
+  add_result { wantarray ? (baz => [@_]) : [@_] };
+}
+
+{
   package Subthing;
   use Moose;
   extends 'Thing';
+  with 'Baz';
   use t::Concatenator;
 
   add_result { wantarray ? (subclass => [@_]) : [@_] };
@@ -56,6 +65,7 @@ cmp_deeply(
     [ $obj, qw(a b c) ],
     [ $obj, qw(a b c) ],
     [ $obj, qw(a b c) ],
+    [ $obj, qw(a b c) ],
   ),
   "scalar context results are as expected"
 );
@@ -65,13 +75,12 @@ cmp_deeply(
   bag(
     [ foo => [ $obj, qw(a b c) ] ],
     [ bar => [ $obj, qw(a b c) ] ],
+    [ baz => [ $obj, qw(a b c) ] ],
     [ instance => [ $obj, qw(a b c) ] ],
     [ class    => [ $obj, qw(a b c) ] ],
     [ subclass => [ $obj, qw(a b c) ] ],
   ),
   "list context results are as expected"
 );
-
-note explain \@list;
 
 done_testing;
