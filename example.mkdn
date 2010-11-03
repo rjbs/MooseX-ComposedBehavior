@@ -43,6 +43,6 @@
 
 # code
 
-    my $obj = Thing->new({ tags => [ qw(xyzzy) ] };
+    my $obj = Thing->new({ tags => [ qw(xyzzy) ] });
 
     $obj->tags;  # bag of: foo bar bar quux bingo xyzzy
