@@ -34,7 +34,9 @@ role {
   my ($p) = @_;
 
   my $stub_name = $p->stub_method_name;
-  method $stub_name => sub {};
+  method $stub_name => sub {
+    Carp::cluck("@_..."); shift->maybe::next::method(@_)
+  };
 
   my $method_name  = $p->method_name;
   my $compositor   = $p->compositor;

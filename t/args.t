@@ -37,7 +37,7 @@ use Test::More;
 {
   package Subthing;
   use Moose;
-  BEGIN { extends 'Thing'; }
+  extends 'Thing';
   use t::Concatenator;
 
   add_result { wantarray ? (subclass => [@_]) : [@_] };
@@ -47,7 +47,6 @@ my $obj = Subthing->new;
 
 my $scalar = $obj->results(qw(a b c));
 my @list   = $obj->results(qw(a b c));
-# note explain { scalar => $scalar, list => \@list };
 
 cmp_deeply(
   $scalar,
@@ -72,5 +71,7 @@ cmp_deeply(
   ),
   "list context results are as expected"
 );
+
+note explain \@list;
 
 done_testing;
