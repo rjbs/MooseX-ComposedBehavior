@@ -15,12 +15,12 @@ sub _build_composed_behavior {
 
   my %sub;
 
-  my $method_name = 'MooseX_ComposedBehavior_' . $i++;
-  my $sugar_name  = $arg->{sugar_name};
+  my $sugar_name = $arg->{sugar_name};
+  my $stub_name  = 'MooseX_ComposedBehavior_' . $i++ . "_$sugar_name";
 
   my $role = MooseX::ComposedBehavior::Stub->meta->generate_role(
     parameters => {
-      stub_method_name => $method_name,
+      stub_method_name => $stub_name,
       compositor       => $arg->{compositor},
       method_name      => $arg->{method_name},
       also_compose     => $arg->{also_compose},
@@ -40,7 +40,7 @@ sub _build_composed_behavior {
             $target->meta,
             'around',
             [
-              $method_name,
+              $stub_name,
               sub {
                 my ($orig, $self, $arg, $col) = @_;
                 my @array;
