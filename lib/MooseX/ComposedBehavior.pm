@@ -61,7 +61,6 @@ sub _build_composed_behavior {
       INIT => sub {
         my $target = $_[1]{into};
         $_[0] = { target => $target };
-        # return 1 if $target->can('does') and $target->does($role);
         Moose::Util::apply_all_roles($target, $role);
         return 1;
       },
@@ -72,10 +71,5 @@ sub _build_composed_behavior {
 
   return \%sub;
 }
-
-# with in class == apply_all_roles($class, @roles)
-# with in role  == apply_all_roles($role,  @roles)
-
-
 
 1;
