@@ -43,8 +43,8 @@ sub _build_composed_behavior {
               $stub_name,
               sub {
                 my ($orig, $self, $arg, $col) = @_;
-                my @array;
-                push @array, (wantarray
+
+                my @array = (wantarray
                   ? $self->$code(@$arg)
                   : scalar $self->$code(@$arg)
                 );

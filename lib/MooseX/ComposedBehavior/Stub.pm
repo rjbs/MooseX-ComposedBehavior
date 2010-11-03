@@ -14,11 +14,11 @@ parameter method_name => (
 );
 
 subtype 'MooseX::ComposedBehavior::Stub::_MethodList',
-  as 'ArrayRef[Str]';
+  as 'ArrayRef[Str|CodeRef]';
 
 coerce 'MooseX::ComposedBehavior::Stub::_MethodList',
-  from 'Str',
-  via { [$_] };
+  from 'CodeRef', via { [$_] },
+  from 'Str',     via { [$_] };
 
 parameter also_compose => (
   isa    => 'MooseX::ComposedBehavior::Stub::_MethodList',
@@ -52,7 +52,7 @@ role {
     if (defined $also_compose) {
       for my $also_method (@$also_compose) {
         push @$results, (wantarray 
-          ? [ $self->$also_method ] : scalar $self->$also_method);
+          ? [ $self->$also_method(@_) ] : scalar $self->$also_method(@_));
       }
     }
 
