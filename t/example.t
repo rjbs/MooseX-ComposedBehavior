@@ -20,20 +20,34 @@ use Test::More;
 }
 
 {
-  package Thing;
-  use Moose;
-  use t::TagProvider;
-
-  with qw(Foo Bar);
-
-  add_tags { qw(bingo) };
+  package OneOffTags;
+  use Moose::Role;
 
   has tags => (
     isa => 'ArrayRef[Str]',
     traits   => [ 'Array' ],
     handles  => { _instance_tags => 'elements' },
+    default  => sub {  []  },
     init_arg => 'tags',
   );
+}
+
+{
+  package Thing;
+  use Moose;
+  use t::TagProvider;
+
+  with qw(Foo Bar OneOffTags);
+
+  add_tags { qw(bingo) };
+}
+
+{
+  package OtherThing;
+  use Moose;
+  use t::TagProvider;
+
+  with qw(Bar OneOffTags);
 }
 
 my $obj = Thing->new({ tags => [ qw(xyzzy) ] });
@@ -42,3 +56,9 @@ is_deeply(
   [ sort qw(foo bar bar quux bingo xyzzy) ],
 );
 
+is_deeply(
+  [ sort OtherThing->new->tags ],
+  [ sort qw(bar quux) ],
+);
+
+done_testing;
