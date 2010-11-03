@@ -31,6 +31,7 @@
     package Thing;
     use Moose;
     use TagProvider;
+    with qw(Foo Bar);
 
     add_tags { qw(bingo) };
 
