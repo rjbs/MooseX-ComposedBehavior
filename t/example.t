@@ -54,11 +54,19 @@ my $obj = Thing->new({ tags => [ qw(xyzzy) ] });
 is_deeply(
   [ sort $obj->tags ],
   [ sort qw(foo bar bar quux bingo xyzzy) ],
+  "composed tags from classes, roles, and instance",
+);
+
+is(
+  $obj->tags,
+  4,
+  "our contrived scalar context composition",
 );
 
 is_deeply(
   [ sort OtherThing->new->tags ],
   [ sort qw(bar quux) ],
+  "more composed tags from classes",
 );
 
 done_testing;

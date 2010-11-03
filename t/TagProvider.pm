@@ -5,7 +5,8 @@ use MooseX::ComposedBehavior -compose => {
   also_compose => '_instance_tags',
   compositor   => sub {
     my ($self, $results) = @_;
-    return map { @$_ } @$results;
+    return map { @$_ } @$results if wantarray;
+    return @$results;
   },
   method_name  => 'tags',
 };
