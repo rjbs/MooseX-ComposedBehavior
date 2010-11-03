@@ -1,6 +1,8 @@
 package MooseX::ComposedBehavior::Stub;
 use MooseX::Role::Parameterized;
 
+use Moose::Util::TypeConstraints;
+
 parameter stub_method_name => (
   isa => 'Str',
   required => 1,
@@ -11,8 +13,16 @@ parameter method_name => (
   required => 1,
 );
 
+subtype 'MooseX::ComposedBehavior::Stub::_MethodList',
+  as 'ArrayRef[Str]';
+
+coerce 'MooseX::ComposedBehavior::Stub::_MethodList',
+  from 'Str',
+  via { [$_] };
+
 parameter also_compose => (
-  isa => 'Str',
+  isa    => 'MooseX::ComposedBehavior::Stub::_MethodList',
+  coerce => 1,
 );
 
 parameter compositor => (
@@ -40,8 +50,10 @@ role {
               : (scalar $self->$stub_name(\@_, $results));
 
     if (defined $also_compose) {
-      push @$results, (wantarray 
-        ? [ $self->$also_compose ] : scalar $self->$also_compose);
+      for my $also_method (@$also_compose) {
+        push @$results, (wantarray 
+          ? [ $self->$also_method ] : scalar $self->$also_method);
+      }
     }
 
     return $compositor->($self, \@$results);

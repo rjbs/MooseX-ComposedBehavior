@@ -48,6 +48,7 @@ sub _build_composed_behavior {
                   ? $self->$code(@$arg)
                   : scalar $self->$code(@$arg)
                 );
+
                 push @$col, wantarray ? \@array : $array[0];
                 $self->$orig($arg, $col);
               },

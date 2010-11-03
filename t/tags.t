@@ -20,24 +20,11 @@ use Test::More;
 }
 
 {
-  package OneOffTags;
-  use Moose::Role;
-
-  has tags => (
-    isa => 'ArrayRef[Str]',
-    traits   => [ 'Array' ],
-    handles  => { _instance_tags => 'elements' },
-    default  => sub {  []  },
-    init_arg => 'tags',
-  );
-}
-
-{
   package Thing;
   use Moose;
   use t::TagProvider;
 
-  with qw(Foo Bar OneOffTags);
+  with qw(Foo Bar t::OneOffTags);
 
   add_tags { qw(bingo) };
 }
@@ -47,7 +34,7 @@ use Test::More;
   use Moose;
   use t::TagProvider;
 
-  with qw(Bar OneOffTags);
+  with qw(Bar t::OneOffTags);
 }
 
 my $obj = Thing->new({ tags => [ qw(xyzzy) ] });
