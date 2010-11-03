@@ -34,9 +34,7 @@ role {
   my ($p) = @_;
 
   my $stub_name = $p->stub_method_name;
-  method $stub_name => sub {
-    Carp::cluck("@_..."); shift->maybe::next::method(@_)
-  };
+  method $stub_name => sub { };
 
   my $method_name  = $p->method_name;
   my $compositor   = $p->compositor;
@@ -47,9 +45,14 @@ role {
 
     my $results = [];
 
-    my @array;
-    wantarray ? (@array = $self->$stub_name(\@_, $results))
-              : (scalar $self->$stub_name(\@_, $results));
+    foreach my $method (
+      reverse
+      Class::MOP::class_of($self)->find_all_methods_by_name($stub_name)
+    ) {
+      my @array;
+      wantarray ? (@array = $method->{code}->execute($self, \@_, $results))
+                : (scalar $method->{code}->execute($self, \@_, $results));
+    }
 
     if (defined $also_compose) {
       for my $also_method (@$also_compose) {
