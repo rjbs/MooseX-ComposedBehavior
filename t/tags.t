@@ -44,12 +44,6 @@ is_deeply(
   "composed tags from classes, roles, and instance",
 );
 
-is(
-  $obj->tags,
-  4,
-  "our contrived scalar context composition",
-);
-
 is_deeply(
   [ sort OtherThing->new->tags ],
   [ sort qw(bar quux) ],
