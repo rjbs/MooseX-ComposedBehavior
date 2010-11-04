@@ -31,16 +31,14 @@ parameter compositor => (
 );
 
 parameter context => (
-  isa => 'Str',
+  isa       => enum([ qw(list scalar) ]),
+  predicate => 'forces_context',
 );
 
 role {
   my ($p) = @_;
 
-  my $wantarray = ! defined $p->context   ? undef
-                : $p->context eq 'list'   ? 1
-                : $p->context eq 'scalar' ? 0
-                : Carp::croak("illegal context supplied: " . $p->context);
+  my $wantarray = $p->forces_context ? ($p->context eq 'list' ? 1 : 0) : undef;
 
   my $stub_name = $p->stub_method_name;
   method $stub_name => sub { };
