@@ -1,4 +1,4 @@
-package MooseX::ComposedBehavior::Stub;
+package MooseX::ComposedBehavior::Guts;
 use MooseX::Role::Parameterized;
 
 use Moose::Util::TypeConstraints;

@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package MooseX::ComposedBehavior;
 
-use MooseX::ComposedBehavior::Stub;
+use MooseX::ComposedBehavior::Guts;
 
 use Sub::Exporter -setup => {
   groups => [ compose => \'_build_composed_behavior' ],
@@ -18,7 +18,7 @@ sub _build_composed_behavior {
   my $sugar_name = $arg->{sugar_name};
   my $stub_name  = 'MooseX_ComposedBehavior_' . $i++ . "_$sugar_name";
 
-  my $role = MooseX::ComposedBehavior::Stub->meta->generate_role(
+  my $role = MooseX::ComposedBehavior::Guts->meta->generate_role(
     parameters => {
       stub_method_name => $stub_name,
       compositor       => $arg->{compositor},
