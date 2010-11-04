@@ -27,6 +27,7 @@ of weird problems.
 First, you describe your composed behavior, say in the package "TagProvider":
 
   package TagProvider;
+  use strict;
 
   use MooseX::ComposedBehavior -compose => {
     method_name  => 'tags',
@@ -48,7 +49,7 @@ example, consider this example:
     package Foo;
     use Moose::Role;
     use TagProvider;
-    add_tags { qw(foo bar) };
+    add_tags { qw(foo baz) };
   }
 
   {
@@ -65,6 +66,115 @@ example, consider this example:
     with qw(Foo Bar);
     add_tags { qw(bingo) };
   }
+
+Now, when you say:
+
+  my $thing = Thing->new;
+  my @tags  = $thing->tags;
+
+...each of the C<add_tags> code blocks above is called.  The result of each
+block is gathered and an arrayref of all the results is passed to the
+C<compositor> routine.  The one we defined above is very simple, and just
+concatenates all the results together.
+
+C<@tags> will contain, in no particular order: foo, bar, baz, quux, and bingo
+
+Result composition can be much more complex, and the context in which the
+registered blocks are called can be controlled.  The options for composed
+behavior are described below.
+
+=head1 HOW TO USE IT
+
+=for :list
+1. make a helper module, like the "TagProvider" one above
+2. C<use> the helper in every relevant role or class
+3. write blocks using the "sugar" function
+4. call the method on instances as needed
+5. you're done!
+
+There isn't much to using it beyond knowing how to write the actual behavior
+compositor (or "helper module") that you want.  Helper modules will probably
+always be very short: package declaration, C<use strict>,
+MooseX::ComposedBehavior invocation, and nothing more.  Everything important
+goes in the arguments to MooseX::ComposedBehavior's import routine:
+
+  package MyHelper;
+  use strict;
+
+  use MooseX::ComposedBehavior -compose => {
+    ... important stuff goes here ...
+  };
+
+  1;
+
+=head2 Options to MooseX::ComposedBehavior
+
+=begin :list
+
+= C<method_name>
+
+This is the name of the method that you'll call to get composed results.  When
+this method is called, all the registered behavior is run, the results
+gathered, and those results passed to the compositor (described below).
+
+= C<sugar_name>
+
+This is the of the sugar to export into packages using the helper module.  It
+should be called like this (assuming the C<sugar_name> is C<add_behavior>):
+
+  add_behavior { ...the behavior... ; return $value };
+
+When this block is invoked, it will be passed the invocant (the class or
+instance) followed by all the arguments passed to the main method -- that is,
+the method named by C<method_name>.
+
+= C<context>
+
+This parameter forces a specific calling context on the registered blocks of
+behavior.  It can be either "scalar" or "list" or may be omitted.  The blocks
+registered by the sugar function will always be called in the given context.
+If no context is given, they will be called in the same context that the main
+method was called.
+
+The C<context> option does I<not> affect the context in which the compositor is
+called.  It is always called in the same context as the main method.
+
+Void context is propagated as scalar context.  B<This may change in the
+future> to support void context per se.
+
+= C<compositor>
+
+The compositor is a coderef that gets all the results of registered behavior
+(and C<also_compose>, below) and combines them into a final result, which will
+be returned from the main method.
+
+It is passed the invocant, followed by an arrayref of block results.  The
+block results are in an undefined order.  If the blocks were called in scalar
+context, each block's result is the returned scalar.  If the blocks were called
+in list context, each block's result is an arrayref containing the returned
+list.
+
+The compositor is I<always> called in the same context as the main method, even
+if the behavior blocks were forced into a different context.
+
+= C<also_compose>
+
+This parameter is a coderef or method name, or an arrayref of coderefs and/or
+method names.  These will be called along with the rest of the registered
+behavior, in the same context, and their results will be composed like any
+other results.  It would be possible to simply write this:
+
+  add_behavior {
+    my $self = shift;
+    $self->some_method;
+  };
+
+...but if this was somehow composed more than once (by repeating a role
+application, for example) you would get the results of C<some_method> more than
+once.  By putting the method into the C<also_compose> option, you are
+guaranteed that it will run only once.
+
+=end :list
 
 =cut
 
