@@ -24,6 +24,8 @@ sub _build_composed_behavior {
       compositor       => $arg->{compositor},
       method_name      => $arg->{method_name},
       also_compose     => $arg->{also_compose},
+
+      (defined $arg->{context} ? (context => $arg->{context}) : ()),
     },
   );
 

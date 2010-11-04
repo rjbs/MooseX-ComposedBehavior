@@ -30,8 +30,17 @@ parameter compositor => (
   required => 1,
 );
 
+parameter context => (
+  isa => 'Str',
+);
+
 role {
   my ($p) = @_;
+
+  my $wantarray = ! defined $p->context   ? undef
+                : $p->context eq 'list'   ? 1
+                : $p->context eq 'scalar' ? 0
+                : Carp::croak("illegal context supplied: " . $p->context);
 
   my $stub_name = $p->stub_method_name;
   method $stub_name => sub { };
@@ -45,18 +54,20 @@ role {
 
     my $results = [];
 
+    my $wantarray = defined $wantarray ? $wantarray : wantarray;
+
     foreach my $method (
       reverse
       Class::MOP::class_of($self)->find_all_methods_by_name($stub_name)
     ) {
       my @array;
-      wantarray ? (@array = $method->{code}->execute($self, \@_, $results))
-                : (scalar $method->{code}->execute($self, \@_, $results));
+      $wantarray ? (@array = $method->{code}->execute($self, \@_, $results))
+                 : (scalar $method->{code}->execute($self, \@_, $results));
     }
 
     if (defined $also_compose) {
       for my $also_method (@$also_compose) {
-        push @$results, (wantarray 
+        push @$results, ($wantarray
           ? [ $self->$also_method(@_) ] : scalar $self->$also_method(@_));
       }
     }

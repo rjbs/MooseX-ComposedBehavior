@@ -49,7 +49,8 @@ my $list_in_L = [ $obj->gather_lists ];
 my $list_in_S = $obj->gather_lists;
 
 cmp_deeply($list_in_L, $want_L,   "gather_lists in list context");
-cmp_deeply($list_in_S, $list_bag, "gather_lists in scalar context");
+cmp_deeply($list_in_S, $list_bag, "gather_lists in scalar context")
+  or note explain $list_in_S;
 
 my $scalar_in_L = [ $obj->gather_scalars ];
 my $scalar_in_S = $obj->gather_scalars;
