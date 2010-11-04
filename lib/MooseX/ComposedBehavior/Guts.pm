@@ -1,5 +1,17 @@
 package MooseX::ComposedBehavior::Guts;
 use MooseX::Role::Parameterized;
+# ABSTRACT: the gooey, meaty bits that help MooseX::ComposedBehavior work
+
+=head1 OVERVIEW
+
+MooseX::ComposedBehavior::Guts contains a bunch of code that is used by
+L<MooseX::ComposedBehavior> to get its job done.  It is basically a hack, and
+relying on any part of its interface would be a I<terrible> idea.
+
+Reading the source, on the other hand, might be useful in understanding what
+the heck is going on, especially if you encounter weird problem.
+
+=cut
 
 use Moose::Util::TypeConstraints;
 
