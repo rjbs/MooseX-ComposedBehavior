@@ -68,7 +68,8 @@ role {
   method $method_name => sub {
     my $self    = shift;
 
-    my $results = [];
+    my $results   = [];
+    my $providers = [];
 
     my $wantarray = defined $wantarray ? $wantarray : wantarray;
 
@@ -78,19 +79,23 @@ role {
     @methods = reverse @methods if $reverse;
 
     foreach my $method (@methods) {
-      my @array;
-      $wantarray ? (@array = $method->{code}->execute($self, \@_, $results))
-                 : (scalar $method->{code}->execute($self, \@_, $results));
+      if ($wantarray) {
+        () = $method->{code}->execute($self, \@_, $results, $providers);
+      } else {
+        scalar $method->{code}->execute($self, \@_, $results, $providers);
+      }
     }
 
     if (defined $also_compose) {
       for my $also_method (@$also_compose) {
         push @$results, ($wantarray
           ? [ $self->$also_method(@_) ] : scalar $self->$also_method(@_));
+
+        push @$providers, $also_method;
       }
     }
 
-    return $compositor->($self, \@$results);
+    return $compositor->($self, $results, $providers);
   }
 };
 

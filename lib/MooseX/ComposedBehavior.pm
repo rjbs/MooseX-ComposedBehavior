@@ -217,21 +217,24 @@ sub _build_composed_behavior {
         return sub (&) {
           my ($code) = shift;
 
+          my $meta = $target->meta;
+
           Moose::Util::add_method_modifier(
-            $target->meta,
+            $meta,
             'around',
             [
               $stub_name,
               sub {
-                my ($orig, $self, $arg, $col) = @_;
+                my ($orig, $self, $arg, $results, $providers) = @_;
 
                 my @array = (wantarray
                   ? $self->$code(@$arg)
                   : scalar $self->$code(@$arg)
                 );
 
-                push @$col, wantarray ? \@array : $array[0];
-                $self->$orig($arg, $col);
+                push @$results, wantarray ? \@array : $array[0];
+                push @$providers, $meta;
+                $self->$orig($arg, $results, $providers);
               },
             ],
           );
