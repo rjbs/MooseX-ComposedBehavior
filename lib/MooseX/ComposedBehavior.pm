@@ -201,6 +201,9 @@ sub _build_composed_behavior {
       method_name      => $arg->{method_name},
       also_compose     => $arg->{also_compose},
 
+      (defined $arg->{method_order} ? (method_order => $arg->{method_order})
+        : ()),
+
       (defined $arg->{context} ? (context => $arg->{context}) : ()),
     },
   );
