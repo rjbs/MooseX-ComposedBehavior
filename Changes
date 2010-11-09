@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.002     2010-11-08 19:04:13 America/New_York
           behavior blocks now called mostly most-to-least derived now
 
           "method_order" block allows this to be reversed
