@@ -174,6 +174,17 @@ application, for example) you would get the results of C<some_method> more than
 once.  By putting the method into the C<also_compose> option, you are
 guaranteed that it will run only once.
 
+= C<method_order>
+
+By default, registered behaviors are called on the most derived class and its
+roles, first.  That is: the class closest to the class of the method invocant,
+then upward toward superclasses.  This is how the C<DEMOLISH> methods in
+L<Moose::Object> work.
+
+If C<method_order> is provided, and is "reverse" then the methods are called in
+reverse order: base class first, followed by derived classes.  This is how the
+C<BUILD> methods in Moose::Object work.
+
 =end :list
 
 =cut
