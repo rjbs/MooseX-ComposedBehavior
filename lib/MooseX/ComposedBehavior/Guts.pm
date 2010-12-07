@@ -1,5 +1,5 @@
 package MooseX::ComposedBehavior::Guts;
-use MooseX::Role::Parameterized;
+use MooseX::Role::Parameterized 0.21;
 # ABSTRACT: the gooey, meaty bits that help MooseX::ComposedBehavior work
 
 =head1 OVERVIEW

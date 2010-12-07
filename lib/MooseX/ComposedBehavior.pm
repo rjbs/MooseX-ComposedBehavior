@@ -206,6 +206,7 @@ sub _build_composed_behavior {
   my $stub_name  = 'MooseX_ComposedBehavior_' . $i++ . "_$sugar_name";
 
   my $role = MooseX::ComposedBehavior::Guts->meta->generate_role(
+    ($arg->{role_name} ? (package => $arg->{role_name}) : ()),
     parameters => {
       stub_method_name => $stub_name,
       compositor       => $arg->{compositor},

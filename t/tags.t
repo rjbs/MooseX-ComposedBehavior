@@ -38,6 +38,12 @@ use Test::More;
 }
 
 my $obj = Thing->new({ tags => [ qw(xyzzy) ] });
+
+ok(
+  $obj->does('t::TagProvider'),
+  "the object does t::TagProvider",
+);
+
 is_deeply(
   [ sort $obj->tags ],
   [ sort qw(foo bar bar quux bingo xyzzy) ],
