@@ -258,12 +258,19 @@ sub _build_composed_behavior {
       INIT => sub {
         my $target = $_[1]{into};
         $_[0] = { target => $target };
+
+        # Applying roles to the target fails mysteriously if it is not (yet)
+        # something to which roles can be applied, for example if the "use
+        # Moose" decl appears after "use MooseX::ComposedBehavior" [MJD]
+        Moose::Util::find_meta($target)
+            or Carp::confess(__PACKAGE__ .
+                      ": target package '$target' is not a Moose class");
         Moose::Util::apply_all_roles($target, $role);
         return 1;
       },
     },
   });
-  
+
   $sub{import} = $import;
 
   return \%sub;
