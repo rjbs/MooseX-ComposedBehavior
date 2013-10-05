@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.004     2013-10-05 09:04:08 America/New_York
+          improve error provided when used in a non-Moose package
+          (thanks, Mark Jason Dominus!
+
 0.003     2010-12-08 14:17:42 America/New_York
           fix bug where not passing also_compose was fatal
 
